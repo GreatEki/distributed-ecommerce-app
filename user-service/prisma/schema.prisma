@@ -11,16 +11,41 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   firstName String
   lastName  String
-  email     String   @unique
+  email     String    @unique
   password  String
   userType  UserType
+  admin     Admin?
+  customer  Customer?
 }
 
 enum UserType {
   ADMIN
   CUSTOMER
   EMPLOYEE
+}
+
+model Admin {
+  id          String @id @default(uuid())
+  user        User   @relation(fields: [userId], references: [id])
+  userId      String @unique
+  role        Role   @default(Basic)
+  address     String
+  phoneNumber String
+}
+
+model Customer {
+  id          String @id @default(uuid())
+  user        User   @relation(fields: [userId], references: [id])
+  userId      String @unique
+  address     String
+  phoneNumber String
+}
+
+enum Role {
+  Basic
+  Admin
+  SuperAdmin
 }
