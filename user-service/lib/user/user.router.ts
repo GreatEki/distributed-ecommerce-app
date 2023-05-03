@@ -6,4 +6,6 @@ const UserRouter = Router();
 
 UserRouter.route("/signup").post(createUserValidator, controller.createUser);
 
+UserRouter.route("/signin").post(controller.signIn);
+
 export default UserRouter;
