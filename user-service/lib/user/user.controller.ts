@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-import { BadRequestError } from "@greateki-ticket-ms-demo/common";
+import {
+  BadRequestError,
+  NotFoundError,
+} from "@greateki-ticket-ms-demo/common";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { Admin, Customer } from "@prisma/client";
 import prisma from "../../config/prisma-client";
 import * as customerService from "../customer/customer.service";
 import * as adminService from "../admin/admin.service";
@@ -121,6 +123,27 @@ export const signIn = async (
           admin,
         },
       },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { userId } = req.body;
+
+    const user = await prisma.user.findFirst({ where: { id: userId } });
+
+    if (!user) throw new NotFoundError("User not found");
+
+    return res.json({
+      message: "User returned",
+      data: user,
     });
   } catch (err) {
     next(err);

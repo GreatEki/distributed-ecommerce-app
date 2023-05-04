@@ -8,4 +8,6 @@ UserRouter.route("/signup").post(createUserValidator, controller.createUser);
 
 UserRouter.route("/signin").post(controller.signIn);
 
+UserRouter.route("/:userId").get(controller.getUser);
+
 export default UserRouter;
