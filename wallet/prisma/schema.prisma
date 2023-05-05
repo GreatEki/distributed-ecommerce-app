@@ -20,7 +20,8 @@ model User {
 }
 
 model Wallet {
-  id     String  @id @default(uuid())
-  user   User?   @relation(fields: [userId], references: [id])
-  userId String? @unique
+  id      String  @id @default(uuid())
+  user    User?   @relation(fields: [userId], references: [id])
+  userId  String? @unique
+  balance Int     @default(0)
 }
