@@ -9,6 +9,8 @@ import prisma from "../../config/prisma-client";
 import * as customerService from "../customer/customer.service";
 import * as adminService from "../admin/admin.service";
 import { UserTypes } from "../../shared/types";
+import { UserCreatedPublisher } from "../../events/publisher/UserCreatedPublisher";
+import { rabbitMqClient } from "../../events/rabbitMQ";
 
 export const createUser = async (
   req: Request,
@@ -65,6 +67,16 @@ export const createUser = async (
           });
 
       return newUser;
+    });
+
+    const publisher = new UserCreatedPublisher(rabbitMqClient.channel);
+
+    publisher.publish({
+      id: result.id,
+      firstName: result.firstName,
+      lastName: result.lastName,
+      email: result.email,
+      userType: result.userType,
     });
 
     return res.status(201).json({
