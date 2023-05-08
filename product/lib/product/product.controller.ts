@@ -24,3 +24,20 @@ export const createProduct = async (
     next(err);
   }
 };
+
+export const getProducts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const products = await prisma.product.findMany();
+
+    return res.json({
+      message: "Products retrieved",
+      data: products,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
