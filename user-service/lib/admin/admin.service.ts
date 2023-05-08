@@ -1,4 +1,4 @@
-import { Admin, PrismaClient } from "@prisma/client";
+import { Admin } from "@prisma/client";
 
 interface AdminAttr {
   userId: string;

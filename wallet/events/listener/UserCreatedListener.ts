@@ -15,8 +15,6 @@ export class UserCreatedListener extends BaseListener<UserCreatedEvent> {
     data: UserCreatedEvent["message"],
     msg: ConsumeMessage
   ): Promise<void> {
-    this.channel.ack(msg);
-
     await prisma.$transaction(async (prisma) => {
       const user = await prisma.user.create({
         data: {
@@ -32,5 +30,7 @@ export class UserCreatedListener extends BaseListener<UserCreatedEvent> {
         },
       });
     });
+
+    this.channel.ack(msg);
   }
 }
