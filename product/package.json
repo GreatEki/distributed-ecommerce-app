@@ -19,7 +19,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@greateki-ticket-ms-demo/ecommshared": "^1.0.9",
+    "@greateki-ticket-ms-demo/ecommshared": "^1.0.10",
     "@prisma/client": "^4.13.0",
     "amqplib": "^0.10.3",
     "dotenv": "^16.0.3",

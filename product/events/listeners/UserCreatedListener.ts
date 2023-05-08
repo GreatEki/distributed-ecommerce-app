@@ -4,8 +4,8 @@ import {
   RoutingKey,
   UserType,
 } from "@greateki-ticket-ms-demo/ecommshared";
-import { ConsumeMessage } from "amqplib";
 import { serviceQueueName } from "../queue-name";
+import { ConsumeMessage } from "amqplib";
 import prisma from "../../config/prisma-client";
 
 export class UserCreatedListener extends BaseListener<UserCreatedEvent> {
@@ -16,19 +16,26 @@ export class UserCreatedListener extends BaseListener<UserCreatedEvent> {
     data: UserCreatedEvent["message"],
     msg: ConsumeMessage
   ): Promise<void> {
-    if (!data.userType.includes(UserType.CUSTOMER)) {
+    // confirm user typec
+    if (!data.userType?.includes(UserType.CUSTOMER)) {
       this.channel.ack(msg);
       return;
     }
 
+    // create user
     await prisma.$transaction(async (prisma) => {
       const user = await prisma.user.create({
         data: {
-          ...data,
+          id: data.id,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          userType: data.userType,
         },
       });
 
-      await prisma.wallet.create({
+      // create user cart
+      await prisma.cart.create({
         data: {
           user: {
             connect: { id: user.id },

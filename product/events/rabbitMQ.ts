@@ -4,7 +4,7 @@ class RabbitMQ {
   private _channel?: Channel;
 
   get channel() {
-    if (this._channel) throw new Error("Channel not created");
+    if (!this._channel) throw new Error("Channel not created");
 
     return this._channel;
   }
