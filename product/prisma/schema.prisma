@@ -15,10 +15,3 @@ model Product {
   name  String
   price Int
 }
-
-model User {
-  id        String @id @default(uuid())
-  firstName String
-  lastName  String
-  email     String
-}
