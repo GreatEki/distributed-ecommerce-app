@@ -40,6 +40,7 @@ export const addItemToCart = async (
     const result = await prisma.cart.update({
       where: { userId: userCart.userId },
       data: { products: { connect: [{ id: productId }] } },
+      include: { products: true },
     });
 
     return res.json({
@@ -57,11 +58,9 @@ export const getUserCart = async (
   next: NextFunction
 ) => {
   try {
-    const { userId } = req.params;
-
     const cart = await prisma.cart.findUnique({
-      where: { userId },
-      include: { products: true },
+      where: { userId: req.currentUser!.id },
+      include: { user: true, products: true },
     });
 
     if (!cart) throw new NotFoundError("No cart found for record user");
@@ -69,6 +68,39 @@ export const getUserCart = async (
     return res.json({
       message: "User cart info",
       data: cart,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const removeFromCart = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { product: productId } = req.params;
+
+    const product = await prisma.product.findFirst({
+      where: { id: productId },
+    });
+
+    if (!product) throw new NotFoundError("No such product found");
+
+    const result = await prisma.cart.update({
+      where: { userId: req.currentUser?.id },
+      data: {
+        products: {
+          disconnect: [{ id: product.id }],
+        },
+      },
+      include: { products: true },
+    });
+
+    return res.status(200).json({
+      message: "Item removed from cart",
+      data: result,
     });
   } catch (err) {
     next(err);

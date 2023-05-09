@@ -11,10 +11,11 @@ datasource db {
 }
 
 model Product {
-  id    String @id @default(uuid())
-  name  String
-  price Int
-  Cart  Cart[]
+  id     String  @id @default(uuid())
+  name   String
+  price  Int
+  Cart   Cart?   @relation(fields: [cartId], references: [id])
+  cartId String?
 }
 
 model User {

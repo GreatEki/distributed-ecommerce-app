@@ -4,6 +4,9 @@ import * as controller from "./cart.controller";
 const CartRouter = Router();
 
 CartRouter.route("/add").post(controller.addItemToCart);
-CartRouter.route("/user/:userId").get(controller.getUserCart);
+CartRouter.route("/user").get(controller.getUserCart);
+CartRouter.route("/remove/product/:productId").delete(
+  controller.removeFromCart
+);
 
 export default CartRouter;
