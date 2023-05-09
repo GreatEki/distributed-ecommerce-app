@@ -5,7 +5,7 @@ import {
   errorHandler,
   NotFoundError,
 } from "@greateki-ticket-ms-demo/ecommshared";
-import router from "./lib/product/product.router";
+import { AppRouter } from "./router";
 
 const app = express();
 
@@ -14,7 +14,7 @@ app.use(express.json());
 
 app.use(currentUser);
 app.use(requireAuth);
-app.use("/api/product", router);
+app.use("/api/product", AppRouter);
 
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
   next(new NotFoundError("Resource not found"));
