@@ -8,7 +8,7 @@ import { serviceQueueName } from "../queue-name";
 import { ConsumeMessage } from "amqplib";
 import prisma from "../../config/prisma-client";
 
-export default class UserCreatedListener extends BaseListener<UserCreatedEvent> {
+export class UserCreatedListener extends BaseListener<UserCreatedEvent> {
   routingKey: RoutingKey.UserCreated = RoutingKey.UserCreated;
   QueueName: string = serviceQueueName;
 

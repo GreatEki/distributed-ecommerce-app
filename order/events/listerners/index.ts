@@ -1,3 +1,2 @@
-import UserCreatedListener from "./UserCreatedListener";
-
-export { UserCreatedListener };
+export * from "./UserCreatedListener";
+export * from "./ProductCreatedListener";
