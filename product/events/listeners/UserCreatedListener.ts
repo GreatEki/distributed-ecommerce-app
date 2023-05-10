@@ -16,12 +16,6 @@ export class UserCreatedListener extends BaseListener<UserCreatedEvent> {
     data: UserCreatedEvent["message"],
     msg: ConsumeMessage
   ): Promise<void> {
-    // confirm user typec
-    if (!data.userType?.includes(UserType.CUSTOMER)) {
-      this.channel.ack(msg);
-      return;
-    }
-
     // create user
     await prisma.$transaction(async (prisma) => {
       const user = await prisma.user.create({

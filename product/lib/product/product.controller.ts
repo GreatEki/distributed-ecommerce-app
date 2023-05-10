@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import prisma from "../../config/prisma-client";
+import { ProductCreatedPublisher } from "../../events/publishers/ProductCreatedListener";
+import { rabbitMQClient } from "../../events/rabbitMQ";
 
 export const createProduct = async (
   req: Request,
@@ -14,6 +16,12 @@ export const createProduct = async (
         name,
         price,
       },
+    });
+
+    new ProductCreatedPublisher(rabbitMQClient.channel).publish({
+      id: product.id,
+      name: product.name,
+      price: product.price,
     });
 
     return res.status(201).json({
