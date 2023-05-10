@@ -9,7 +9,10 @@ import prisma from "../../config/prisma-client";
 import * as customerService from "../customer/customer.service";
 import * as adminService from "../admin/admin.service";
 import { UserTypes } from "../../shared/types";
-import { UserCreatedPublisher } from "../../events/publisher/UserCreatedPublisher";
+import {
+  UserCreatedPublisher,
+  UserUpdatedPublisher,
+} from "../../events/publisher";
 import { rabbitMqClient } from "../../events/rabbitMQ";
 
 export const createUser = async (
@@ -85,6 +88,62 @@ export const createUser = async (
     });
   } catch (error) {
     next(error);
+  }
+};
+
+export const updateUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { firstName, lastName, address, phoneNumber, role } = req.body;
+
+    const user = await prisma.user.findUnique({
+      where: { id: req.currentUser!.id },
+    });
+
+    if (!user) throw new NotFoundError("User not found");
+
+    const result = await prisma.$transaction(async (prisma) => {
+      const updatedUser = await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          firstName,
+          lastName,
+        },
+      });
+
+      user.userType.includes(UserTypes.ADMIN)
+        ? await adminService.updateAdmin(prisma, {
+            userId: user.id,
+            address,
+            phoneNumber,
+            role,
+          })
+        : await customerService.updateCustomer(prisma, {
+            address,
+            phoneNumber,
+            userId: user.id,
+          });
+
+      return updatedUser;
+    });
+
+    new UserUpdatedPublisher(rabbitMqClient.channel).publish({
+      id: user.id,
+      firstName,
+      lastName,
+      email: user.email,
+      userType: user.userType,
+    });
+
+    return res.status(200).json({
+      message: "User updated",
+      data: result,
+    });
+  } catch (err) {
+    next(err);
   }
 };
 

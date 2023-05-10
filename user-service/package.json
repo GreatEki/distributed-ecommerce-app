@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@greateki-ticket-ms-demo/common": "^1.0.12",
-    "@greateki-ticket-ms-demo/ecommshared": "^1.0.4",
+    "@greateki-ticket-ms-demo/ecommshared": "^1.0.19",
     "@hapi/joi": "^17.1.1",
     "@prisma/client": "^4.13.0",
     "amqplib": "^0.10.3",

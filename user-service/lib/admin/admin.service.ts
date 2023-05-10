@@ -24,3 +24,14 @@ export const createAdmin = async (
     },
   });
 };
+
+export const updateAdmin = async (prisma: any, admin: AdminAttr) => {
+  return await prisma.admin.update({
+    where: { userId: admin.userId },
+    data: {
+      role: admin.role,
+      address: admin.address,
+      phoneNumber: admin.phoneNumber,
+    },
+  });
+};

@@ -7,7 +7,7 @@ interface CustomerAttr {
   phoneNumber: string;
 }
 
-const createCustomer = async (
+export const createCustomer = async (
   prisma: any,
   customer: CustomerAttr
 ): Promise<Customer> => {
@@ -24,4 +24,12 @@ const createCustomer = async (
   });
 };
 
-export { createCustomer };
+export const updateCustomer = async (prisma: any, customer: CustomerAttr) => {
+  return await prisma.customer.update({
+    where: { userId: customer.userId },
+    data: {
+      address: customer.address,
+      phoneNumber: customer.phoneNumber,
+    },
+  });
+};

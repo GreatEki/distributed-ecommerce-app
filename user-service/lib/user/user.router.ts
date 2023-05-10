@@ -6,7 +6,9 @@ const UserRouter = Router();
 
 UserRouter.route("/signup").post(createUserValidator, controller.createUser);
 
-UserRouter.route("/signin").post(controller.signIn); 
+UserRouter.route("/update").put(controller.updateUser);
+
+UserRouter.route("/signin").post(controller.signIn);
 
 UserRouter.route("/:userId").get(controller.getUser);
 
